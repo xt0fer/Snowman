@@ -184,7 +184,7 @@ public class Compiler {
                 return ";; call enter";
             }
             public String exit(Ast node, Ast parent) {
-                return "\t\tDO " + node.value.toUpperCase();
+                return "\t\t" + node.value.toUpperCase();
             }
         },
         numberliteral { // visitor methods

@@ -25,12 +25,13 @@ produces a pseudo-assembly-code of
                 PUSH #2
                 PUSH #4
                 PUSH #2
-                DO SUBTRACT
-                DO ADD
-                POP
+                SUBTRACT
+                ADD
                 PRINT
                 HALT
 ```
+
+Lines which start with `;;` are comments.
 
 which will be used to demonstrate the `Zee Virtual Machine` (zeeVM). See https://github.com/xt0fer/ZeeVM
 
