@@ -176,7 +176,7 @@ public class Compiler {
                 return ";; Begin program code\n\t\tSTART";
             }
             public String exit(Ast node, Ast parent) {
-                return ";; Print top of stack\n\t\tPOP\n\t\tPRINT\n\t\tHALT";
+                return ";; Print top of stack & exit\n\t\tPRINT\n\t\tHALT";
             }
         },
         callexpression { // visitor methods
