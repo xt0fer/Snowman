@@ -32,7 +32,7 @@ produces a pseudo-assembly-code of
                 HALT
 ```
 
-which will be used to demonstrate the `Zee Virtual Machine` (zeeVM).
+which will be used to demonstrate the `Zee Virtual Machine` (zeeVM). See https://github.com/xt0fer/ZeeVM
 
 
 ```
