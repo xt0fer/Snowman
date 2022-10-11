@@ -4,81 +4,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Compiler {
+    private Boolean DEBUG = false;
 
-    enum TokenType {
-        paren,
-        thesis,
-        name,
-        number,
-        string
-    }
-    class Token {
-        public TokenType type;
-        public String value;
-        Token(TokenType type, String value) {
-            this.type = type;
-            this.value = value;
-        }
-    }
-
-    enum AstType {
-        program { // visitor funcs
-            public String enter(Ast node, Ast parent) {
-                return ";; Begin program code\n\t\tSTART";
-            }
-            public String exit(Ast node, Ast parent) {
-                return ";; Print top of stack\n\t\tPOP\n\t\tPRINT\n\t\tHALT";
-            }
-        },
-        callexpression {
-            public String enter(Ast node, Ast parent) {
-                return ";; call enter";
-            }
-            public String exit(Ast node, Ast parent) {
-                return "\t\tDO " + node.value.toUpperCase();
-            }
-        },
-        numberliteral {
-            public String enter(Ast node, Ast parent) {
-                return ";; num enter";
-            }
-            public String exit(Ast node, Ast parent) {
-                return "\t\tPUSH #"+ node.value;
-            }
-        },
-        stringliteral {
-            public String enter(Ast node, Ast parent) {
-                return ";; string enter";
-            }
-            public String exit(Ast node, Ast parent) {
-                return ";; string exit";
-            }
-        };
-
-        abstract String enter(Ast node, Ast parent);
-        abstract String exit(Ast node, Ast parent);
-    }
-    class Ast {
-        public AstType type;
-        public String value;
-        public ArrayList<Ast> params;
-        Ast(AstType type,
-            String value) {
-                this.type = type;
-                this.value = value;
-                this.params = new ArrayList<>();
-            }
-    }
-
+    /**
+     * Main compile method.
+     */
     public String compile(String input) {
         ArrayList<Token> tokens;
+        
         try {
+            // phase one: break input into list of tokens
             tokens = tokenizer(input);
-            printTokens(tokens);
+
+            // phase two: create an abstract syntax tree (AST) from tokens.
             Ast ast = parser(tokens);
-            //NewAst newAst = transformer(ast);
+            
+            // phase three: visit each node of AST and emit code 
             String output = codeGenerator(ast);
-            return output;
+            
+            return output; // is the Zee VM code as a string.
+
             } catch (Exception e) {
                 System.err.println(";; Error in input: "+e);
             e.printStackTrace();
@@ -86,10 +31,22 @@ public class Compiler {
         return null;
     }
 
+    /**
+     * tokenizer - takes a string of input, the source of the program
+     * and produces program as a list of Tokens. This can also be referred to as
+     * the `scanner` or the `lexer`.
+     * @param input
+     * @return ArrayList<Token>
+     * @throws Exception
+     */
     private ArrayList<Token> tokenizer(String input) throws Exception {
         int current = 0;
+        // use current as index into input string.
+        // notice that `ch` is NOT a `char`, it is a String.
+        // this is just a design choice.
+
+
         ArrayList<Token> tokens = new ArrayList<>();
-        // maybe this should be a weird Iterable??? with a push()??
 
         while (current < input.length()) {
 
@@ -142,16 +99,20 @@ public class Compiler {
             }
             throw new Exception(";; Illegal character in input.");
         }
+
+        if (DEBUG) printTokens(tokens);
+
         return tokens;
     }
     
-    private void printTokens(ArrayList<Token> tts) {
-        for (Token t : tts) {
-            System.err.println(";; "+t.type+":"+t.value);
-        }
-    }
-    private Ast parser(ArrayList<Token> tokens) {
-        //int current = 0;
+    /**
+     * parser - takes a list of Tokens and produces an Abstract Syntax Tree (AST) data
+     * structure.
+     * @param tokens
+     * @return Ast tree
+     * @throws Exception
+     */
+    private Ast parser(ArrayList<Token> tokens) throws Exception {
         Ast root = new Ast(AstType.program, null);
         Iterator<Token> tokenIterator = tokens.iterator();
         Token token = null;
@@ -161,13 +122,120 @@ public class Compiler {
         return root;
     }
 
-    private Ast walk(Token token, Iterator<Token> tokens) {
+    // used to collect output code during code generation phase.
+    private StringBuilder outputCode; 
+
+    /**
+     * codeGenerator - takes an Abstract Syntax Tree and produces assembly code for
+     * the Zee virtual machine. Uses a `VISITOR` pattern as you traverse the tree. See
+     * AstType for visitor routines, enter and exit for each AstType node type.
+     * @param ast
+     * @return String of output code
+     */
+    private String codeGenerator(Ast ast) {
+        // For debugging, print out the AST received.
+        if (DEBUG) dumpAST(ast);
+
+        // using an instance varaable to capture emitted code.
+        // this is vaguely distateful. WHY??
+        outputCode = new StringBuilder();
+        visitAndEmit(ast); // emitCode appends code to the outputCode
+        return outputCode.toString();
+    }
+
+    /**
+     * these are types of Tokens in the language
+     */
+    enum TokenType {
+        paren,
+        thesis,
+        name,
+        number,
+        string
+    }
+    /**
+     * Token of the language
+     */
+    class Token {
+        public TokenType type;
+        public String value;
+        Token(TokenType type, String value) {
+            this.type = type;
+            this.value = value;
+        }
+    }
+
+    /**\
+     * AstType are the nodes in the AST.
+     * the two methods associated with each type are used to generate
+     * code in the 3rd phase of the compiler.
+     */
+    enum AstType {
+        program { // visitor methods
+            public String enter(Ast node, Ast parent) {
+                return ";; Begin program code\n\t\tSTART";
+            }
+            public String exit(Ast node, Ast parent) {
+                return ";; Print top of stack\n\t\tPOP\n\t\tPRINT\n\t\tHALT";
+            }
+        },
+        callexpression { // visitor methods
+            public String enter(Ast node, Ast parent) {
+                return ";; call enter";
+            }
+            public String exit(Ast node, Ast parent) {
+                return "\t\tDO " + node.value.toUpperCase();
+            }
+        },
+        numberliteral { // visitor methods
+            public String enter(Ast node, Ast parent) {
+                return ";; num enter";
+            }
+            public String exit(Ast node, Ast parent) {
+                return "\t\tPUSH #"+ node.value;
+            }
+        },
+        stringliteral { // visitor methods
+            public String enter(Ast node, Ast parent) {
+                return ";; string enter";
+            }
+            public String exit(Ast node, Ast parent) {
+                return ";; string exit";
+            }
+        };
+
+        abstract String enter(Ast node, Ast parent);
+        abstract String exit(Ast node, Ast parent);
+    }
+
+    /**
+     * Ast is an object within the Abstract Syntax Tree. Each one represents
+     * a segment of the code in the program.
+     */
+    class Ast {
+        public AstType type;
+        public String value;
+        public ArrayList<Ast> params;
+        Ast(AstType type,
+            String value) {
+                this.type = type;
+                this.value = value;
+                this.params = new ArrayList<>();
+            }
+    }
+
+    /**
+     * walk - a routine that recursively assembles the AST based on each token 
+     * in the tokenlist from the tokenizer.
+     * @param token
+     * @param tokens
+     * @return
+     * @throws Exception
+     */
+    private Ast walk(Token token, Iterator<Token> tokens) throws Exception {
         if (tokens.hasNext()) {
             token = tokens.next();
-            System.err.println(";; walk: 0 "+token.value);
-        } else System.err.println(";; EOF 0");
-
-        //= tokens.get(idx);
+        } 
 
         if (token.type == TokenType.number) {
             return new Ast(AstType.numberliteral, token.value);
@@ -178,26 +246,44 @@ public class Compiler {
         if (token.type == TokenType.paren) {
             if (tokens.hasNext()) {
                 token = tokens.next();
-                System.err.println(";; walk: 1 "+token.value);
-            } else System.err.println(";; EOF 1");
+            }
+
             Ast node = new Ast(AstType.callexpression, token.value);
 
             while (token.type != TokenType.thesis) {
                 Ast t = walk(token, tokens);
-                if (t != null) node.params.add(t);
-                else break;
+                if (t != null) {
+                    node.params.add(t);
+                } else break;
             }
             return node;
         }
         if (token.type == TokenType.thesis) {
             return null;
         }
-
-        System.err.println(";; UNKNOWN TOKEN..."+token.value);
-        return null;
+        throw new Exception(";; UNKNOWN TOKEN..."+token.value);
     }
 
-    private void traverseAndEmit(Ast ast) {
+    /**
+     * emitCode - attachs code passed in to a stringbuilder instance variable
+     * in the compiler.
+     * @param code
+     */
+    private void emitCode(String code) {
+        //System.err.println(code);
+        outputCode.append(code+"\n");
+    }
+
+    /**
+     * traversal routines. careful here, this is how you traverse an AST
+     * and generate code from it.
+     * It is done recursively, which is one of the few places recursion is
+     * generally accepted.
+     * At each node, you invoke the AST's enter/exit routines to emit code.
+     * 
+     */
+
+    private void visitAndEmit(Ast ast) {
         traverseNodeAndEmit(ast, null);
     }
 
@@ -222,29 +308,31 @@ public class Compiler {
         emitCode(node.type.exit(node, parent));
     }
 
-    private void emitCode(String code) {
-        //System.err.println(code);
-        outputCode.append(code+"\n");
-    }
+    /**
+     * these routine each "dump", or print to std err,
+     * the data structure so you can see what's what at each phase.
+     * 
+     */
 
-    private StringBuilder outputCode; 
-
-    private String codeGenerator(Ast ast) {
-        // For debugging, print out the AST received.
+    private void dumpAST(Ast ast) {
         System.err.println(";; BEGIN Ast Dump");
-        printNode(ast);
+        printAST(ast);
         System.err.println(";; END Ast Dump");
 
-        // bad: using an instance varable to capture emitted code.
-        outputCode = new StringBuilder();
-        traverseAndEmit(ast);
-        return outputCode.toString();
     }
-
-    private void printNode(Ast ast) {
-        System.err.println(";; "+ast.type.toString()+":"+ast.value);
+    private void printAST(Ast ast) {
+        System.err.println(";; "+ast.type.toString()+": "+ast.value);
         for (Ast e : ast.params) {
-            printNode(e);
+            printAST(e);
         }
     }
+
+    private void printTokens(ArrayList<Token> tts) {
+        System.err.println(";; BEGIN Token List Dump");
+        for (Token t : tts) {
+            System.err.println(";; "+t.type+":"+t.value);
+        }
+        System.err.println(";; END Token List Dump");
+    }
+
 }
