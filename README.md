@@ -12,6 +12,11 @@ The first phase is the tokenizer, the second is the parser, and the  third is co
 Right now the `snowman language` is very simple.
 
 It has two functions which add or subtract integers.
+So the basic idea is 
+
+Evaluating the expression `(add x y)` -> `x + y` 
+Evaluating the expression `(subtract x y)` -> `x - y` 
+
 
 ```
 (add 2 (subtract 4 2)) 
@@ -36,11 +41,9 @@ Lines which start with `;;` are comments.
 which will be used to demonstrate the `Zee Virtual Machine` (zeeVM). See https://github.com/xt0fer/ZeeVM
 
 
-```
-(add 1 1)
-```
 
 ```
+(add 1 1)
 (add 45 (add (subtract (add 21 21) 13) 23))
 ```
 
@@ -51,9 +54,13 @@ are examples of other possible programs in this language.
 Once you have read the code and get an idea of what it does, you need to add the following concepts to it:
 
 - now, you add `multiply` and `divide`
+  - `(multiply x y)` -> `x * y`
+  - `(divide x y)` -> `x / y` (integer result)
+  - `(mod x y)` -> `x % y` (integer remainder or modulo)
 - how about comments like "// comments..." (from // to EOL)
+
 - simple comparisons `EQ` `NE` `ZE` `LT` and `GE`
-- a `LET` function
+- a `LET` function for variables??
 
 ## Furture Lab Ideas
 
@@ -62,9 +69,9 @@ Below, where you see "LET" think "let". Uppercase, lowercase should not matter.
 ### Variables
 Integer values mapped to names.
 ```
-(LET X 5)
-(LET Y (add 5 8))
-(add X Y)
+(LET X 5) -> x = 5;
+(LET Y (add 5 8)) -> y = 5 + 8;
+(add X Y) -> (x + y) -> 5 + 13 -> 18;
 ```
 
 Could then
