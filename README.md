@@ -16,10 +16,18 @@ So the basic idea is
 
 Evaluating the expression `(add x y)` -> `x + y` 
 Evaluating the expression `(subtract x y)` -> `x - y` 
+Evaluating the expression `(print x)` -> it'll print x on std out. 
+
 
 
 ```
 (add 2 (subtract 4 2)) 
+// leaves 4 as result
+```
+
+```
+(print (add 2 (subtract 4 2)))
+// print 4 on std out.
 ```
 
 produces a pseudo-assembly-code of 
