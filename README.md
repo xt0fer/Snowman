@@ -68,24 +68,24 @@ Once you have read the code and get an idea of what it does, you need to add the
 - how about comments like "// comments..." (from // to EOL)
 
 - simple comparisons `EQ` `NE` `ZE` `LT` and `GE`
-- a `LET` function for variables??
+- a `VAR` function for variables??
 
 ## Furture Lab Ideas
 
-Below, where you see "LET" think "let". Uppercase, lowercase should not matter.
+Below, where you see "VAR" think "let". Uppercase, lowercase should not matter.
 
 ### Variables
 Integer values mapped to names.
 ```
-(LET X 5) -> x = 5;
-(LET Y (add 5 8)) -> y = 5 + 8;
+(VAR X 5) -> x = 5;
+(VAR Y (add 5 8)) -> y = 5 + 8;
 (add X Y) -> (x + y) -> 5 + 13 -> 18;
 ```
 
 Could then
 ```
-(LET TRUE 1)
-(LET FALSE 0)
+(VAR TRUE 1)
+(VAR FALSE 0)
 ```
 
 might also 
