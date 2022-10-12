@@ -176,12 +176,12 @@ public class Compiler {
                 return ";; Begin program code\n\t\tSTART";
             }
             public String exit(Ast node, Ast parent) {
-                return ";; Print top of stack & exit\n\t\tPRINT\n\t\tHALT";
+                return ";; exit program\n\t\tHALT";
             }
         },
         callexpression { // visitor methods
             public String enter(Ast node, Ast parent) {
-                return ";; call enter";
+                return ";; call";
             }
             public String exit(Ast node, Ast parent) {
                 return "\t\t" + node.value.toUpperCase();
@@ -189,7 +189,7 @@ public class Compiler {
         },
         numberliteral { // visitor methods
             public String enter(Ast node, Ast parent) {
-                return ";; num enter";
+                return ";; num";
             }
             public String exit(Ast node, Ast parent) {
                 return "\t\tPUSH #"+ node.value;
@@ -197,7 +197,7 @@ public class Compiler {
         },
         stringliteral { // visitor methods
             public String enter(Ast node, Ast parent) {
-                return ";; string enter";
+                return ";; string";
             }
             public String exit(Ast node, Ast parent) {
                 return ";; string exit";
