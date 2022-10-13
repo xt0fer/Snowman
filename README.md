@@ -123,6 +123,8 @@ and what about *lambda*, how would add it to this language?
 (λ (X Y) (...))
 
 (VAR F (LAMBDA (X) (ADD X + 123)))
+
+(PRINT (F 456)) ;; which would print 579...
 ```
 
 which then let the programmer create functions within the language.
