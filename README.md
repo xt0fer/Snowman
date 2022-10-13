@@ -103,8 +103,18 @@ might also
 
 and also
 ```
-(IF 1 (add 4 5))
+(VAR TRUE 1)
+(IF TRUE (VAR x (ADD 4 5)))
 ```
+which might be
+*if (true) { x = 4 + 5; }*
+
+or perhaps 
+```
+(WHILE (LT X 10) (VAR X (SUBTRACT X 1)))
+```
+which might be thought of as
+*while (x < 10) { x = x - 1; }*
 
 and what about 
 
