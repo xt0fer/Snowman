@@ -46,8 +46,7 @@ produces a pseudo-assembly-code of
 
 Lines which start with `;;` are comments.
 
-which will be used to demonstrate the `Zee Virtual Machine` (zeeVM). See https://github.com/xt0fer/ZeeVM
-
+Generated from `Snowman` is used to demonstrate the `Zee Virtual Machine` (zeeVM). See https://github.com/xt0fer/ZeeVM
 
 
 ```
@@ -114,3 +113,29 @@ and what about
 (λ (X Y) (...))
 
 ```
+
+## Late News from ZeeVM
+
+Currently the ZeeVM (1.2) supports LABELs and LOAD/STORE of alpha-named variables.
+
+```
+        PUSH #9
+        STORE X
+        ;; and
+        LOAD X
+        PRINT
+        ;; should display 9 in output.
+```
+
+and labels and jumps like this infinite loop.
+
+```
+        LABEL FOO
+        ;; bunch of code
+        JUMP FOO
+```
+
+*Gee?* so how do I avoid using JUMP (which is really a GOTO, isn't it?)?
+
+Well, there is also conditional jump called `JMPZ FOO` which pops the stack and if the value there is equal to zero, the jump happens (jumping to where FOO is declared with a LABEL). Otherwise, the next instruction after the jump is done.
+
