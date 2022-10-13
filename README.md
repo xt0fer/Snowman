@@ -116,13 +116,16 @@ or perhaps
 which might be thought of as
 *while (x < 10) { x = x - 1; }*
 
-and what about 
+and what about *lambda*, how would add it to this language?
 
 ```
 (LAMBDA (X Y) (...))
 (λ (X Y) (...))
 
+(VAR F (LAMBDA (X) (ADD X + 123)))
 ```
+
+which then let the programmer create functions within the language.
 
 ## Late News from ZeeVM
 
