@@ -11,11 +11,13 @@ If you are not familiar with one or the other. I'll just give you a quick intro.
 
 If we had two functions `add` and `subtract` they would be written like this:
 
+```
                  LISP                      ZeeVM code
 
   2 + 2          (add 2 2)                 PUSH 2; PUSH 2; ADD
   4 - 2          (subtract 4 2)            PUSH 4; PUSH 2; SUBTRACT
   2 + (4 - 2)    (add 2 (subtract 4 2))    PUSH 2; PUSH 4; PUSH 2; SUBTRACT; ADD
+```
 
 Easy peezy right?
 
@@ -231,7 +233,29 @@ node types of the AST, and it will recursively call itself to print nested
 nodes until everything is printed into one long string of code.
 
 In this case, we will be generating code that the ZeeVM virtual machine
-can execute to produce an answer.
+can execute to produce an answer. So a small piece of code like this:
+
+```
+(print (add 2 (subtract 4 2)))
+// print 4 on std out.
+```
+
+produces a pseudo-assembly-code of 
+
+```
+;; Begin program code
+                START
+                PUSH #2
+                PUSH #4
+                PUSH #2
+                SUBTRACT
+                ADD
+                PRINT
+                HALT
+```
+
+Which is what the ZeeVM machine can take in and execute. It's a "lower level" language,
+using a simple stack to hold operands, which can then evaluate to a result.
 
 And that's it! That's all the different pieces of a compiler.
 
