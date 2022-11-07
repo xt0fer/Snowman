@@ -129,7 +129,7 @@ and what about *lambda*, how would add it to this language?
 
 which then let the programmer create functions within the language.
 
-## Late News from ZeeVM
+## Late News from ZeeVM v1.2
 
 Currently the ZeeVM (1.2) supports LABELs and LOAD/STORE of alpha-named variables.
 
