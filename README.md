@@ -76,8 +76,10 @@ Below, where you see "VAR" think "let". Uppercase, lowercase should not matter.
 ### Variables
 Integer values mapped to names.
 ```
+;; declare, initialize vars
 (VAR X 5) -> x = 5;
 (VAR Y (add 5 8)) -> y = 5 + 8;
+;; use vars
 (add X Y) -> (x + y) -> 5 + 13 -> 18;
 ```
 
